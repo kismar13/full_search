@@ -13,6 +13,28 @@ def get_coordinates(address: str):
     return toponym_longitude, toponym_lattitude
 
 
+def get_coordinates_and_span(address: str):
+    toponym = geocoder_request(address)
+    if toponym is None:
+        return (None, None), (None, None)
+
+    # Координаты центра топонима:
+    toponym_coodrinates = toponym['Point']['pos']
+    # Широта, преобразованная в плавающее число:
+    toponym_longitude, toponym_lattitude = map(float, toponym_coodrinates.split(' '))
+
+    # Рамка вокруг объекта:
+    envelope = toponym['boundedBy']['Envelope']
+    # левая, нижняя, правая и верхняя границы из координат углов:
+    l, b = map(float, envelope['lowerCorner'].split())
+    r, t = map(float, envelope['upperCorner'].split())
+    # Вычисляем полуразмеры по вертикали и горизонтали
+    dx = abs(l - r) / 2
+    dy = abs(t - b) / 2
+
+    return (toponym_longitude, toponym_lattitude), (dx, dy)
+
+
 API_KEY = '40d1649f-0493-4b70-98ba-98533de7710b'
 
 
