@@ -1,7 +1,7 @@
 import requests
 
 
-def get_map(ll: tuple[float, float], spn: tuple[float, float], map_type: str) -> str:
+def get_map(*, ll: tuple[float, float], spn: tuple[float, float], map_type: str) -> str:
     response = requests.get('http://static-maps.yandex.ru/1.x/', params={
         'll': ','.join(map(str, ll)),
         'spn': ','.join(map(str, spn)),
