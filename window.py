@@ -21,14 +21,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._refresh_map()
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
+        move_distance = 35 / self._map_zoom ** 2
         previous_zoom = self._map_zoom
         if event.key() == Qt.Key_PageUp:
             self._map_zoom += 1
         elif event.key() == Qt.Key_PageDown:
             self._map_zoom -= 1
+        elif event.key() == Qt.Key_Up or event.key() == Qt.Key_W:
+            self._map_ll[1] += move_distance
+        elif event.key() == Qt.Key_Down or event.key() == Qt.Key_S:
+            self._map_ll[1] += move_distance
+        elif event.key() == Qt.Key_Left or event.key() == Qt.Key_A:
+            self._map_ll[0] += move_distance
+        elif event.key() == Qt.Key_Right or event.key() == Qt.Key_D:
+            self._map_ll[0] += move_distance
         self._map_zoom = self._clip_zoom(self._map_zoom, 1, 16)
         if previous_zoom != self._map_zoom:
-            self._refresh_map()
+            return
+        self._refresh_map()
 
     def _clip_zoom(self, zoom: int, min_zoom: int, max_zoom: int) -> int:
         if zoom < min_zoom:
